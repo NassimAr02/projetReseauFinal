@@ -28,10 +28,7 @@ exit
 
 ip routing
 
-interface gigabitEthernet 1/0/1
- switchport mode trunk
- no shutdown
-exit
+
 
 # Configuration des interfaces VLAN
 interface vlan 10
@@ -66,3 +63,28 @@ ip dhcp pool Commercial
  default-router 192.168.30.254
  dns-server 8.8.8.8
 exit
+interface gigabitEthernet 1/0/1
+ no switchport
+ ip address 192.168.99.2 255.255.255.248
+ no shutdown
+exit    
+ip route 0.0.0.0 0.0.0.0 192.168.99.1
+
+ip access-list extended ACL_BLOC_COMM
+deny ip 192.168.30.240 0.0.0.15 192.168.10.248 0.0.0.7
+permit ip any any 
+interface vlan 30
+ ip access-group ACL_BLOC_COMM in
+exit
+#################### Configuration du router ####################
+hostname RouterSiteA
+
+interface gigabitEthernet 0/0/0
+no shutdown
+ip address 192.168.99.1 255.255.255.248
+exit
+
+ip route 192.168.10.248 255.255.255.248 192.168.99.2
+ip route 192.168.20.240 255.255.255.240 192.168.99.2
+ip route 192.168.30.240 255.255.255.240 192.168.99.2
+
