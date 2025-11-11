@@ -29,7 +29,6 @@ exit
 ip routing
 
 
-
 # Configuration des interfaces VLAN
 interface vlan 10
  ip address 192.168.10.254 255.255.255.248
@@ -87,4 +86,45 @@ exit
 ip route 192.168.10.248 255.255.255.248 192.168.99.2
 ip route 192.168.20.240 255.255.255.240 192.168.99.2
 ip route 192.168.30.240 255.255.255.240 192.168.99.2
+ip route 192.168.50.252 255.255.255.252 192.168.99.2
+#################### Configuration du  NAT ####################
+interface gigabitEthernet 0/0/1
+ ip address 80.10.20.2 255.255.255.252
+ ip nat outside
+ no shutdown
+exit
+ip route 0.0.0.0 0.0.0.0 80.10.20.1
 
+interface gigabitEthernet 0/0/0
+ ip nat inside
+ no shutdown
+exit
+
+ip access-list standard Natter
+ permit 192.168.10.248 0.0.0.7
+ permit 192.168.20.240 0.0.0.15
+ permit 192.168.30.240 0.0.0.15
+ permit 192.168.50.252 0.0.0.3
+exit
+
+ip nat inside source list Natter interface gigabitEthernet 0/0/0 overload
+##################### Configuration DMZ sur le switch ####################
+vlan 50
+ name DMZ
+exit
+
+interface gigabitEthernet 1/0/24
+ switchport mode access
+ switchport access vlan 50
+ no shutdown
+exit
+
+interface vlan 50
+ ip address 192.168.50.253 255.255.255.252
+ no shutdown
+exit
+ip route 0.0.0.0 0.0.0.0 
+
+# paramètrage accès DMZ
+
+ip nat inside source static tcp 192.168.50.253 80 80.10.20.1 80
