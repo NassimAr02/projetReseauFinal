@@ -67,11 +67,20 @@ interface gigabitEthernet 1/0/1
  ip address 192.168.99.2 255.255.255.248
  no shutdown
 exit    
+
+ip dhcp excluded-address 192.168.10.254
+ip dhcp excluded-address 192.168.20.254
+ip dhcp excluded-address 192.168.30.254
+ip dhcp excluded-address 192.168.50.253
+
+
 ip route 0.0.0.0 0.0.0.0 192.168.99.1
 
+no ip access-list extended ACL_BLOC_COMM
 ip access-list extended ACL_BLOC_COMM
-deny ip 192.168.30.240 0.0.0.15 192.168.10.248 0.0.0.7
-permit ip any any 
+ deny icmp 192.168.30.240 0.0.0.15 192.168.10.248 0.0.0.7 echo
+ permit ip any any
+exit
 interface vlan 30
  ip access-group ACL_BLOC_COMM in
 exit
@@ -107,7 +116,7 @@ ip access-list standard Natter
  permit 192.168.50.252 0.0.0.3
 exit
 
-ip nat inside source list Natter interface gigabitEthernet 0/0/0 overload
+ip nat inside source list Natter interface gigabitEthernet 0/0/1 overload
 ##################### Configuration DMZ sur le switch ####################
 vlan 50
  name DMZ
@@ -123,8 +132,7 @@ interface vlan 50
  ip address 192.168.50.253 255.255.255.252
  no shutdown
 exit
-ip route 0.0.0.0 0.0.0.0 
+
 
 # paramètrage accès DMZ
-
-ip nat inside source static tcp 192.168.50.253 80 80.10.20.1 80
+ip nat inside source static tcp 192.168.50.254 80 80.10.20.1 80
