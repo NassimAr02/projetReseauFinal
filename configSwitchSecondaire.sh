@@ -26,7 +26,7 @@ interface gigabitEthernet 1/0/21
 exit
 
 ! Trunk vers SwPrincipal
-interface gigabitEthernet 1/0/2
+interface gigabitEthernet 1/0/23
  description TRUNK-to-SwPrincipal
  switchport mode trunk
  switchport trunk allowed vlan 10,20,30,50,99

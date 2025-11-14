@@ -88,8 +88,8 @@ exit
 hostname RouterSiteA
 
 interface gigabitEthernet 0/0/0
-no shutdown
-ip address 192.168.99.1 255.255.255.248
+ no shutdown
+ ip address 192.168.99.1 255.255.255.248
 exit
 
 ip route 192.168.10.248 255.255.255.248 192.168.99.2
@@ -136,3 +136,5 @@ exit
 
 # paramètrage accès DMZ
 ip nat inside source static tcp 192.168.50.254 80 80.10.20.1 80
+
+
